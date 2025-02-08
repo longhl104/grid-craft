@@ -11,10 +11,10 @@ namespace GridCraftTableGenDotNetWebApi.Tests.GridGeneration
             var service = new GridGenerationService();
             var input = new GridInput
             {
-                NumberOfRows = 2,
+                NumberOfRows = 5,
                 Columns =
                 [
-                    new GridColumnInput { Name = "Date", Expression = "2020-Q1" },
+                    new GridColumnInput { Name = "Date", Expression = "{2020 + Truncate(i / 4) }-Q{i % 4 + 1}" },
                     new GridColumnInput { Name = "Demand", Expression = "5000" }
                 ]
             };
