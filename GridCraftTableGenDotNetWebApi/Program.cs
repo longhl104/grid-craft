@@ -1,10 +1,18 @@
+using GridCraftTableGenDotNetWebApi;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new KebabCaseRouteConvention());
+});
 
 // Add OpenAPI (Swagger) services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register services
+builder.RegisterServices();
 
 var app = builder.Build();
 
