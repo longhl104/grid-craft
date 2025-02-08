@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace GridCraftTableGenDotNetWebApi
 {
-    public class KebabCaseRouteConvention : IControllerModelConvention
+    public partial class KebabCaseRouteConvention : IControllerModelConvention
     {
         public void Apply(ControllerModel controller)
         {
@@ -20,9 +20,12 @@ namespace GridCraftTableGenDotNetWebApi
             }
         }
 
-        private string ConvertToKebabCase(string input)
+        private static string ConvertToKebabCase(string input)
         {
-            return Regex.Replace(input, "([a-z0-9])([A-Z])", "$1-$2").ToLower();
+            return KebabCaseRegex().Replace(input, "$1-$2").ToLower();
         }
+
+        [GeneratedRegex("([a-z0-9])([A-Z])")]
+        private static partial Regex KebabCaseRegex();
     }
 }
