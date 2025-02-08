@@ -47,16 +47,58 @@ namespace GridCraftTableGenDotNetWebApi.GridGeneration
         {
             string result = MathRegex().Replace(expression, match =>
             {
-                var v1 = match.Groups[1].Value;
-                var v2 = v1.Replace("i", rowIndex.ToString());
-                var v3 = new NCalc.Expression(v2).Evaluate();
-                return v3.ToString() ?? throw new InvalidOperationException($"Invalid expression: {expression}");
+                var expressionWithIndex = match.Groups[1].Value;
+                var replacedExpression = expressionWithIndex.Replace("i", rowIndex.ToString());
+                var ncalcExpression = new NCalc.Expression(replacedExpression);
+                ncalcExpression.EvaluateFunction += NCalcExtensionFunctions;
+                var evaluatedResult = ncalcExpression.Evaluate();
+                return evaluatedResult.ToString() ?? throw new InvalidOperationException($"Invalid expression: {expression}");
             });
 
             return result;
         }
 
+        private static void NCalcExtensionFunctions(string name, NCalc.FunctionArgs functionArgs)
+        {
+            if (string.Equals(name, "Rand", System.StringComparison.Ordinal))
+            {
+                var min = Convert.ToDecimal(functionArgs.Parameters[0].Evaluate());
+                var max = Convert.ToDecimal(functionArgs.Parameters[1].Evaluate());
+                var difference = functionArgs.Parameters.Length > 2
+                    ? Convert.ToDecimal(functionArgs.Parameters[2].Evaluate())
+                    : (decimal?)null;
+
+                functionArgs.Result = GetRandomDecimal(min, max, difference);
+            }
+        }
+
+        private static decimal GetRandomDecimal(decimal min, decimal max, decimal? difference = null)
+        {
+            Random random = new();
+
+            if (difference.HasValue)
+            {
+                if (difference.Value <= 0)
+                    throw new ArgumentException("Difference must be greater than zero.");
+
+                int steps = (int)((max - min) / difference.Value);
+                int randomStep = random.Next(0, steps + 1); // Inclusive
+                return min + (randomStep * difference.Value);
+            }
+            else
+            {
+                // Generate a truly random decimal in the range
+                double range = (double)(max - min);
+                double randomDouble = random.NextDouble() * range;
+                return min + (decimal)randomDouble;
+            }
+        }
+
+        #region Regex Patterns
+
         [GeneratedRegex(@"\{(.*?)\}")]
         private static partial Regex MathRegex();
+
+        #endregion
     }
 }
