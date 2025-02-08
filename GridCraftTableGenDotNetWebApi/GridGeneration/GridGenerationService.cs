@@ -1,37 +1,46 @@
 
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GridCraftTableGenDotNetWebApi.GridGeneration
 {
     public partial class GridGenerationService
     {
-        public string[][] GenerateGrid(GridInput input)
+        public void GenerateGrid(GridInput input)
         {
-            var grid = new string[input.NumberOfRows + 1][];
+            using var memoryStream = new MemoryStream();
+            using var streamWriter = new StreamWriter(memoryStream, Encoding.UTF8);
             for (var i = 0; i <= input.NumberOfRows; i++)
             {
-                grid[i] = new string[input.Columns.Length];
+                var values = new string[input.Columns.Length];
 
                 if (i == 0)
                 {
                     for (var j = 0; j < input.Columns.Length; j++)
                     {
-                        grid[i][j] = input.Columns[j].Name;
+                        values[j] = input.Columns[j].Name;
                     }
-
-                    continue;
                 }
-
-                for (var j = 0; j < input.Columns.Length; j++)
+                else
                 {
-                    grid[i][j] = EvaluateExpression(
-                        input.Columns[j].Expression,
-                        i - 1 // Index starts from 0
-                    );
+                    for (var j = 0; j < input.Columns.Length; j++)
+                    {
+                        values[j] = EvaluateExpression(
+                            input.Columns[j].Expression,
+                            i - 1 // Index starts from 0
+                        );
+                    }
                 }
+
+                streamWriter.WriteLine(string.Join(",", values));
             }
 
-            return grid;
+            // Ensure data is flushed to stream
+            streamWriter.Flush();
+
+            // Convert stream to string (if needed)
+            string csvContent = Encoding.UTF8.GetString(memoryStream.ToArray());
+            Console.WriteLine(csvContent);
         }
 
 

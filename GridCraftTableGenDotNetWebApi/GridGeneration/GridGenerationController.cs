@@ -10,9 +10,10 @@ namespace GridCraftTableGenDotNetWebApi.GridGeneration
         /// Generates a grid based on the input.
         /// </summary>
         [HttpPost]
-        public ActionResult<string[][]> GenerateGrid(GridInput input)
+        public IActionResult GenerateGrid(GridInput input)
         {
-            return Ok(gridGenerationService.GenerateGrid(input));
+            gridGenerationService.GenerateGrid(input);
+            return Ok();
         }
     }
 }

@@ -23,11 +23,7 @@ namespace GridCraftTableGenDotNetWebApi.Tests.GridGeneration
             };
 
             // Act
-            var result = service.GenerateGrid(input);
-            foreach (var row in result)
-            {
-                Console.WriteLine(string.Join(", ", row));
-            }
+            service.GenerateGrid(input);
         }
     }
 }
