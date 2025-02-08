@@ -28,6 +28,27 @@ function Create-ApiController {
     Write-Host "Controller '${ControllerName}Controller' created in $FolderName with namespace GridCraftTableGenDotNetWebApi.$ControllerName."
 }
 
+function Add-DotnetPackage {
+    param (
+        [string]$PackageName
+    )
+
+    if (-not $PackageName) {
+        Write-Host "Error: Please provide a package name."
+        return
+    }
+
+    Write-Host "Adding package '$PackageName' to the project..."
+    dotnet add package $PackageName
+
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Package '$PackageName' added successfully."
+    } else {
+        Write-Host "Error: Failed to add package '$PackageName'."
+    }
+}
+
 # Example usage:
 # Run-DotnetWithHttps
 # Create-ApiController -ControllerName "Test"
+# Add-DotnetPackage -PackageName "Newtonsoft.Json"
