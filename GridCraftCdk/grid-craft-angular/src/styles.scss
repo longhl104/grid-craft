@@ -1,1 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
+// Reset margins, paddings, and box-sizing
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// Ensure smooth font rendering
+html {
+  font-family: "Arial", sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
