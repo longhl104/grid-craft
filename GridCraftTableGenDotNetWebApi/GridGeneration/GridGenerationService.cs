@@ -1,12 +1,17 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
 
 namespace GridCraftTableGenDotNetWebApi.GridGeneration
 {
-    public partial class GridGenerationService
+    public partial class GridGenerationService(IAmazonS3 amazonS3)
     {
-        public void GenerateGrid(GridInput input)
+        private const string BucketName = "development-gridcrafttablegenerationstack-bucket";
+
+        public async Task<string> GenerateGrid(GridInput input)
         {
             using var memoryStream = new MemoryStream();
             using var streamWriter = new StreamWriter(memoryStream, Encoding.UTF8);
@@ -39,8 +44,22 @@ namespace GridCraftTableGenDotNetWebApi.GridGeneration
             streamWriter.Flush();
 
             // Convert stream to string (if needed)
-            string csvContent = Encoding.UTF8.GetString(memoryStream.ToArray());
-            Console.WriteLine(csvContent);
+            memoryStream.Position = 0; // Reset position to start of stream before uploading
+
+            // Upload to S3
+            var transferUtility = new TransferUtility(amazonS3);
+            var key = $"{Guid.NewGuid()}.csv";
+            await transferUtility.UploadAsync(memoryStream, BucketName, key);
+
+            // Generate a pre-signed URL
+            var url = amazonS3.GetPreSignedURL(new GetPreSignedUrlRequest
+            {
+                BucketName = BucketName,
+                Key = key,
+                Expires = DateTime.Now.AddHours(1)
+            });
+
+            return url;
         }
 
 

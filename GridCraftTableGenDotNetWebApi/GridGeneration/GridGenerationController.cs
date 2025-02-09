@@ -10,10 +10,9 @@ namespace GridCraftTableGenDotNetWebApi.GridGeneration
         /// Generates a grid based on the input.
         /// </summary>
         [HttpPost]
-        public IActionResult GenerateGrid(GridInput input)
+        public async Task<ActionResult<string>> GenerateGrid(GridInput input)
         {
-            gridGenerationService.GenerateGrid(input);
-            return Ok();
+            return Ok(await gridGenerationService.GenerateGrid(input));
         }
     }
 }

@@ -1,14 +1,22 @@
+using Amazon.S3;
 using GridCraftTableGenDotNetWebApi.GridGeneration;
 
 namespace GridCraftTableGenDotNetWebApi.Tests.GridGeneration
 {
     public class GridGenerationServiceTest
     {
+        private readonly IAmazonS3 amazonS3;
+
+        public GridGenerationServiceTest()
+        {
+            amazonS3 = new AmazonS3Client();
+        }
+
         [Fact]
-        public void GenerateGrid_ShouldReturnCorrectGrid_WhenValidInput()
+        public async Task GenerateGrid_ShouldReturnCorrectGrid_WhenValidInput()
         {
             // Arrange
-            var service = new GridGenerationService();
+            var service = new GridGenerationService(amazonS3);
             var input = new GridInput
             {
                 NumberOfRows = 5,
@@ -23,7 +31,9 @@ namespace GridCraftTableGenDotNetWebApi.Tests.GridGeneration
             };
 
             // Act
-            service.GenerateGrid(input);
+            var url = await service.GenerateGrid(input);
+            Console.WriteLine($"Generated grid at: {url}");
         }
     }
 }
+
