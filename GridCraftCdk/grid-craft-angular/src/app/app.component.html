@@ -2,16 +2,16 @@
 
 <div class="container">
   @for (column of gridInput.columns; track $index) {
-    <div>
-      <p-floatlabel>
-        <input
-          pInputText
-          id="over_label"
-          [(ngModel)]="column.name"
-          autocomplete="off"
-        />
-        <label for="over_label">Over Label</label>
-      </p-floatlabel>
-    </div>
+  <div>
+    <p-floatlabel>
+      <input
+        pInputText
+        id="over_label"
+        [(ngModel)]="column.name"
+        autocomplete="off"
+      />
+      <label for="over_label">Over Label</label>
+    </p-floatlabel>
+  </div>
   }
 </div>
