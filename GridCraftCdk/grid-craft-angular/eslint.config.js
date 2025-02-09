@@ -5,6 +5,7 @@ const angular = require("angular-eslint");
 
 module.exports = tseslint.config(
   {
+    ignores: ["src/app/shared/apis/generated-apis.ts"],
     files: ["**/*.ts"],
     extends: [
       eslint.configs.recommended,
@@ -39,5 +40,5 @@ module.exports = tseslint.config(
       ...angular.configs.templateAccessibility,
     ],
     rules: {},
-  }
+  },
 );
